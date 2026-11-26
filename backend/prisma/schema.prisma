@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum SectionType {
+  VOCABULARY
+  GRAMMAR
+  READING
+  LISTENING
+  WRITING
+  SPEAKING
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  FILL_BLANK
+  TRUE_FALSE
+  WORD_ORDER
+  MATCHING
+}
+
+model User {
+  id           String        @id @default(cuid())
+  telegramId   String?       @unique
+  username     String?       @unique
+  fullName     String
+  passwordHash String?
+  role         Role          @default(STUDENT)
+  createdAt    DateTime      @default(now())
+
+  memberships  GroupMember[]
+  attempts     Attempt[]
+  reviewQueue  ReviewQueue[]
+  examAttempts ExamAttempt[]
+  certificates Certificate[]
+}
+
+model Group {
+  id          String            @id @default(cuid())
+  name        String
+  inviteCode  String            @unique
+  teacherId   String
+  createdAt   DateTime          @default(now())
+
+  members     GroupMember[]
+  assignments GroupAssignment[]
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  userId   String
+  groupId  String
+  joinedAt DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, groupId])
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  level       Int
+  title       String
+  description String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(false)
+
+  lessons     Lesson[]
+  exams       Exam[]
+}
+
+model Lesson {
+  id          String            @id @default(cuid())
+  courseId    String
+  number      Int
+  title       String
+  isPublished Boolean           @default(false)
+
+  course      Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  sections    Section[]
+  assignments GroupAssignment[]
+}
+
+model GroupAssignment {
+  id        String    @id @default(cuid())
+  groupId   String
+  lessonId  String
+  dueDate   DateTime?
+  createdAt DateTime  @default(now())
+
+  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  lesson    Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, lessonId])
+}
+
+model Section {
+  id           String       @id @default(cuid())
+  lessonId     String
+  type         SectionType
+  title        String
+  content      String?
+  order        Int          @default(0)
+
+  lesson       Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  vocabularies Vocabulary[]
+  questions    Question[]
+}
+
+model Vocabulary {
+  id          String  @id @default(cuid())
+  sectionId   String
+  hanzi       String
+  pinyin      String
+  translation String
+  exampleCn   String?
+  exampleUz   String?
+  audioUrl    String?
+
+  section     Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id            String        @id @default(cuid())
+  sectionId     String
+  type          QuestionType  @default(MULTIPLE_CHOICE)
+  prompt        String
+  options       Json?
+  correctAnswer String
+  explanation   String?
+  audioUrl      String?
+  points        Int           @default(10)
+  order         Int           @default(0)
+
+  section       Section        @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  attempts      Attempt[]
+  reviewQueue   ReviewQueue[]
+  examQuestions ExamQuestion[]
+}
+
+model Attempt {
+  id         String   @id @default(cuid())
+  userId     String
+  questionId String
+  userAnswer String
+  isCorrect  Boolean
+  score      Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model ReviewQueue {
+  id         String   @id @default(cuid())
+  userId     String
+  questionId String
+  wrongCount Int      @default(1)
+  updatedAt  DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+}
+
+model Exam {
+  id              String         @id @default(cuid())
+  courseId        String
+  title           String
+  durationMinutes Int
+  passingScore    Int            @default(60)
+  isPublished     Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+
+  course          Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  examQuestions   ExamQuestion[]
+  examAttempts    ExamAttempt[]
+  certificates    Certificate[]
+}
+
+model ExamQuestion {
+  id         String   @id @default(cuid())
+  examId     String
+  questionId String
+  order      Int      @default(0)
+
+  exam       Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, questionId])
+}
+
+model ExamAttempt {
+  id         String    @id @default(cuid())
+  userId     String
+  examId     String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  score      Int       @default(0)
+  maxScore   Int       @default(0)
+  passed     Boolean   @default(false)
+  answers    Json?
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exam       Exam      @relation(fields: [examId], references: [id], onDelete: Cascade)
+}
+
+model Certificate {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  userId       String
+  examId       String
+  scorePercent Int
+  issuedAt     DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exam         Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, examId])
+}
