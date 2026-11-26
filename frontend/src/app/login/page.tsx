@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Alert, Button, Form, Input, Tabs } from 'antd';
+import { Alert, Button, Form, Input, Spin, Tabs } from 'antd';
 import {
   BookOutlined,
   LockOutlined,
@@ -25,17 +25,54 @@ interface RegisterFormValues {
 }
 
 export default function LoginPage() {
-  const { user, loading: authLoading, login, register } = useAuth();
+  const { user, loading: authLoading, login, register, loginWithTelegram } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [submitting, setSubmitting] = useState(false);
+  const [tgAuthenticating, setTgAuthenticating] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && user) {
+    if (authLoading) return;
+    if (user) {
       router.replace(getHomeRouteByRole(user.role));
+      return;
     }
-  }, [authLoading, user, router]);
+
+    const tgInitData = window.Telegram?.WebApp?.initData;
+    if (tgInitData && tgInitData.trim().length > 0) {
+      let active = true;
+      async function authTg(initData: string) {
+        setTgAuthenticating(true);
+        try {
+          await loginWithTelegram(initData);
+        } catch (err) {
+          if (active) {
+            setErrorMsg(extractErrorMessage(err, 'Telegram orqali kirishda xatolik yuz berdi'));
+            setTgAuthenticating(false);
+          }
+        }
+      }
+      void authTg(tgInitData);
+      return () => {
+        active = false;
+      };
+    }
+  }, [authLoading, user, router, loginWithTelegram]);
+
+  if (authLoading || tgAuthenticating) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC] gap-4 p-6">
+        <div className="w-12 h-12 rounded-2xl bg-[#DC2626] text-white flex items-center justify-center text-xl font-bold shadow-md font-hanzi">
+          老
+        </div>
+        <Spin size="large" />
+        <p className="text-sm text-[#475569] font-medium">
+          {tgAuthenticating ? 'Telegram orqali kirilmoqda...' : 'Yuklanmoqda...'}
+        </p>
+      </div>
+    );
+  }
 
   function extractErrorMessage(err: unknown, fallback: string): string {
     if (axios.isAxiosError(err)) {

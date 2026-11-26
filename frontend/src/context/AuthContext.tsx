@@ -23,6 +23,7 @@ interface AuthContextValue {
   loading: boolean;
   login: (username: string, password: string) => Promise<User>;
   register: (fullName: string, username: string, password: string) => Promise<User>;
+  loginWithTelegram: (initData: string) => Promise<User>;
   logout: () => void;
 }
 
@@ -44,6 +45,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(nextUser);
   }, []);
 
+  const loginWithTelegram = useCallback(
+    async (initData: string): Promise<User> => {
+      window.Telegram?.WebApp?.ready?.();
+      window.Telegram?.WebApp?.expand?.();
+      const res = await api.post<{ token: string; user: User }>('/api/auth/telegram', {
+        initData,
+      });
+      persistAuth(res.data.token, res.data.user);
+      router.replace('/dashboard');
+      return res.data.user;
+    },
+    [persistAuth, router]
+  );
+
   useEffect(() => {
     let active = true;
 
@@ -58,6 +73,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
           if (!active) return;
           persistAuth(res.data.token, res.data.user);
+          if (window.location.pathname === '/' || window.location.pathname.startsWith('/login')) {
+            router.replace('/dashboard');
+          }
           return;
         }
 
@@ -88,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       active = false;
     };
-  }, [persistAuth]);
+  }, [persistAuth, router]);
 
   const login = useCallback(
     async (username: string, password: string): Promise<User> => {
@@ -125,7 +143,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, login, register, loginWithTelegram, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
