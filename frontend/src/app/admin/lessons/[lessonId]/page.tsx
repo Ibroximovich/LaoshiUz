@@ -449,49 +449,43 @@ export default function AdminLessonEditorPage() {
         {
           hanzi: '你好',
           pinyin: 'nǐ hǎo',
-          translation: 'Salom',
-          exampleCn: '你好，很高兴认识你。',
-          exampleUz: 'Salom, siz bilan tanishganimdan xursandman.',
+          tarjima: 'Salom',
+          misol_gap: '你好，很高兴认识你。',
         },
         {
           hanzi: '谢谢',
           pinyin: 'xièxie',
-          translation: 'Rahmat',
-          exampleCn: '谢谢你的帮助！',
-          exampleUz: 'Yordamingiz uchun rahmat!',
+          tarjima: 'Rahmat',
+          misol_gap: '谢谢你的帮助！',
         },
       ];
       const ws = XLSX.utils.json_to_sheet(sampleRows);
-      XLSX.utils.book_append_sheet(wb, ws, 'Vocabulary');
-      XLSX.writeFile(wb, 'lugat_namuna.xlsx');
+      XLSX.utils.book_append_sheet(wb, ws, 'Lugat');
+      XLSX.writeFile(wb, 'laoshiuz_lugat_shablon.xlsx');
     } else {
       const sampleRows = [
         {
-          type: 'MULTIPLE_CHOICE',
-          prompt: '“你好” so‘zining tarjimasi nima?',
-          optionA: 'Salom',
-          optionB: 'Xayr',
-          optionC: 'Rahmat',
-          optionD: 'Kechirasiz',
-          correctAnswer: 'Salom',
-          explanation: '“你好 (nǐ hǎo)” salomlashishda ishlatiladi.',
-          points: 10,
+          savol: '“你好” so‘zining o‘zbekcha tarjimasi nima?',
+          variant_a: 'Salom',
+          variant_b: 'Xayr',
+          variant_c: 'Rahmat',
+          variant_d: 'Kechirasiz',
+          togri_javob: 'Salom',
+          tushuntirish: '“你好 (nǐ hǎo)” xitoy tilida salomlashishda ishlatiladi.',
         },
         {
-          type: 'TRUE_FALSE',
-          prompt: '“谢谢 (xièxie)” — “Rahmat” degan ma‘noni bildiradi.',
-          optionA: "To'g'ri",
-          optionB: "Noto'g'ri",
-          optionC: '',
-          optionD: '',
-          correctAnswer: "To'g'ri",
-          explanation: 'Ha, 谢谢 minnatdorchilik bildirishda ishlatiladi.',
-          points: 10,
+          savol: '“老师” iyeroglifining to‘g‘ri pinyini qaysi?',
+          variant_a: 'xuéshēng',
+          variant_b: 'lǎoshī',
+          variant_c: 'péngyou',
+          variant_d: 'tóngxué',
+          togri_javob: 'lǎoshī',
+          tushuntirish: '“老师 (lǎoshī)” — ustoz / o‘qituvchi degan ma‘noni bildiradi.',
         },
       ];
       const ws = XLSX.utils.json_to_sheet(sampleRows);
-      XLSX.utils.book_append_sheet(wb, ws, 'Questions');
-      XLSX.writeFile(wb, 'test_savollar_namuna.xlsx');
+      XLSX.utils.book_append_sheet(wb, ws, 'Test');
+      XLSX.writeFile(wb, 'laoshiuz_test_shablon.xlsx');
     }
   }
 
@@ -1261,7 +1255,9 @@ export default function AdminLessonEditorPage() {
               onClick={handleDownloadTemplate}
               className="min-h-[38px] rounded-xl shrink-0"
             >
-              Namuna Excel faylni yuklab olish (.xlsx)
+              {importType === 'vocabulary'
+                ? '📥 Lug‘at shablonini yuklab olish (.xlsx)'
+                : '📥 Test shablonini yuklab olish (.xlsx)'}
             </Button>
           </div>
 
@@ -1274,23 +1270,22 @@ export default function AdminLessonEditorPage() {
                 <div className="text-xs space-y-1">
                   <p>
                     <strong>Majburiy ustunlar:</strong> <code>hanzi</code>, <code>pinyin</code>,{' '}
-                    <code>translation</code>
+                    <code>tarjima</code>
                   </p>
                   <p>
-                    <strong>Ixtiyoriy ustunlar:</strong> <code>exampleCn</code>,{' '}
-                    <code>exampleUz</code>
+                    <strong>Ixtiyoriy ustun:</strong> <code>misol_gap</code>
                   </p>
                 </div>
               ) : (
                 <div className="text-xs space-y-1">
                   <p>
-                    <strong>Majburiy ustunlar:</strong> <code>prompt</code>,{' '}
-                    <code>correctAnswer</code>
+                    <strong>Majburiy ustunlar:</strong> <code>savol</code>,{' '}
+                    <code>togri_javob</code>
                   </p>
                   <p>
-                    <strong>Ixtiyoriy ustunlar:</strong> <code>type</code>, <code>optionA</code>,{' '}
-                    <code>optionB</code>, <code>optionC</code>, <code>optionD</code>,{' '}
-                    <code>explanation</code>, <code>points</code>
+                    <strong>Ixtiyoriy ustunlar:</strong> <code>variant_a</code>,{' '}
+                    <code>variant_b</code>, <code>variant_c</code>, <code>variant_d</code>,{' '}
+                    <code>tushuntirish</code>
                   </p>
                 </div>
               )

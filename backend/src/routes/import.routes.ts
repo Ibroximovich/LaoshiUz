@@ -105,8 +105,8 @@ router.post(
         const normalized = {
           hanzi: asTrimmedString(raw['hanzi']),
           pinyin: asTrimmedString(raw['pinyin']),
-          translation: asTrimmedString(raw['translation']),
-          exampleCn: asOptionalString(raw['exampleCn']),
+          translation: asTrimmedString(raw['tarjima'] ?? raw['translation']),
+          exampleCn: asOptionalString(raw['misol_gap'] ?? raw['exampleCn']),
           exampleUz: asOptionalString(raw['exampleUz']),
         };
 
@@ -176,9 +176,9 @@ router.post(
 
         const normalized = {
           type: rawType ?? QuestionType.MULTIPLE_CHOICE,
-          prompt: asTrimmedString(raw['prompt']),
-          correctAnswer: asTrimmedString(raw['correctAnswer']),
-          explanation: asOptionalString(raw['explanation']),
+          prompt: asTrimmedString(raw['savol'] ?? raw['prompt']),
+          correctAnswer: asTrimmedString(raw['togri_javob'] ?? raw['correctAnswer']),
+          explanation: asOptionalString(raw['tushuntirish'] ?? raw['explanation']),
           points: parsedPoints !== undefined && !Number.isNaN(parsedPoints) ? parsedPoints : 10,
         };
 
@@ -192,10 +192,10 @@ router.post(
         }
 
         const options = [
-          asOptionalString(raw['optionA']),
-          asOptionalString(raw['optionB']),
-          asOptionalString(raw['optionC']),
-          asOptionalString(raw['optionD']),
+          asOptionalString(raw['variant_a'] ?? raw['optionA']),
+          asOptionalString(raw['variant_b'] ?? raw['optionB']),
+          asOptionalString(raw['variant_c'] ?? raw['optionC']),
+          asOptionalString(raw['variant_d'] ?? raw['optionD']),
         ].filter((opt): opt is string => opt !== undefined);
 
         validData.push({
