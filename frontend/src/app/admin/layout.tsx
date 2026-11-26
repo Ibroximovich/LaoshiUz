@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Button, Drawer, Spin, Tag } from 'antd';
+import { Button, Drawer, Tag } from 'antd';
 import {
   BookOutlined,
   FileDoneOutlined,
@@ -11,6 +11,7 @@ import {
   MenuOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
+import { BrandLogo } from '@/components/BrandLogo';
 import { useAuth } from '@/context/AuthContext';
 
 const navItems = [
@@ -54,8 +55,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (loading || !user || (user.role !== 'TEACHER' && user.role !== 'ADMIN')) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC] gap-4 p-6">
-        <Spin size="large" />
-        <p className="text-sm text-[#475569]">Ruxsat tekshirilmoqda...</p>
+        <div className="animate-pulse">
+          <BrandLogo variant="icon" size="lg" />
+        </div>
+        <p className="text-sm text-[#475569] font-medium">Ruxsat tekshirilmoqda...</p>
       </div>
     );
   }
@@ -73,16 +76,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Brand */}
         <Link
           href="/admin"
-          className="flex items-center gap-3 px-1"
+          className="flex flex-col items-start gap-2 px-1"
           onClick={() => setDrawerOpen(false)}
         >
-          <div className="w-10 h-10 rounded-xl bg-[#DC2626] text-white flex items-center justify-center text-xl font-bold shadow-sm shrink-0 font-hanzi">
-            老
-          </div>
-          <div className="min-w-0">
-            <div className="text-base font-bold text-[#0F172A] leading-tight">LaoshiUz</div>
-            <div className="text-xs text-[#475569]">Ustoz / Admin Paneli</div>
-          </div>
+          <BrandLogo variant="full" size="md" />
+          <Tag color="red" className="m-0 rounded-md text-[11px] font-semibold">
+            Ustoz paneli
+          </Tag>
         </Link>
 
         {/* User Info */}
@@ -148,11 +148,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Right Column: Mobile Header + Main Content */}
       <div className="flex-1 min-w-0 flex flex-col">
         <header className="lg:hidden sticky top-0 z-30 h-16 bg-white border-b border-[#E2E8F0] px-4 flex items-center justify-between">
-          <Link href="/admin" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#DC2626] text-white flex items-center justify-center text-lg font-bold font-hanzi">
-              老
-            </div>
-            <span className="font-bold text-[#0F172A]">LaoshiUz Admin</span>
+          <Link href="/admin" className="flex items-center gap-2">
+            <BrandLogo variant="full" size="sm" />
           </Link>
           <Button
             type="text"

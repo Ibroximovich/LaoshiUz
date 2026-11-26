@@ -10,6 +10,7 @@ import {
   HomeOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons';
+import { BrandLogo } from '@/components/BrandLogo';
 import api from '@/lib/api';
 import type { VerifyCertificateResponse } from '@/types';
 
@@ -58,15 +59,7 @@ export default function PublicVerifyCertificatePage() {
       <div className="w-full max-w-xl bg-white rounded-3xl border border-[#E2E8F0] shadow-lg p-6 sm:p-10 space-y-6">
         {/* Brand Header */}
         <div className="flex items-center justify-between gap-3 pb-4 border-b border-[#E2E8F0]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#DC2626] text-white flex items-center justify-center text-xl font-bold font-hanzi">
-              老
-            </div>
-            <div>
-              <div className="text-base font-bold text-[#0F172A]">LaoshiUz</div>
-              <div className="text-xs text-[#475569]">Sertifikat tekshiruv tizimi</div>
-            </div>
-          </div>
+          <BrandLogo variant="full" size="md" showSubtitle />
 
           <SafetyCertificateOutlined className="text-2xl text-[#DC2626]" />
         </div>

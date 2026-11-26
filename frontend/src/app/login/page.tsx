@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Alert, Button, Form, Input, Spin, Tabs } from 'antd';
+import { Alert, Button, Form, Input, Tabs } from 'antd';
 import {
   BookOutlined,
   LockOutlined,
@@ -11,6 +11,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
+import { BrandLogo } from '@/components/BrandLogo';
 import { getHomeRouteByRole, useAuth } from '@/context/AuthContext';
 
 interface LoginFormValues {
@@ -63,10 +64,9 @@ export default function LoginPage() {
   if (authLoading || tgAuthenticating) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC] gap-4 p-6">
-        <div className="w-12 h-12 rounded-2xl bg-[#DC2626] text-white flex items-center justify-center text-xl font-bold shadow-md font-hanzi">
-          老
+        <div className="animate-pulse">
+          <BrandLogo variant="icon" size="lg" />
         </div>
-        <Spin size="large" />
         <p className="text-sm text-[#475569] font-medium">
           {tgAuthenticating ? 'Telegram orqali kirilmoqda...' : 'Yuklanmoqda...'}
         </p>
@@ -111,15 +111,7 @@ export default function LoginPage() {
       <div className="w-full max-w-5xl bg-white rounded-3xl border border-[#E2E8F0] shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
         {/* Left Brand Panel */}
         <div className="relative bg-gradient-to-br from-[#DC2626] via-[#B91C1C] to-[#991B1B] text-white p-8 sm:p-10 lg:p-12 flex flex-col justify-between gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center text-2xl font-bold font-hanzi">
-              老
-            </div>
-            <div>
-              <div className="text-xl font-bold tracking-tight">LaoshiUz</div>
-              <div className="text-xs text-red-100">HSK Academy 3.0</div>
-            </div>
-          </div>
+          <BrandLogo variant="light" size="lg" showSubtitle />
 
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-medium border border-white/20">
@@ -147,6 +139,10 @@ export default function LoginPage() {
 
         {/* Right Form Panel */}
         <div className="p-6 sm:p-10 lg:p-12 flex flex-col justify-center">
+          <div className="lg:hidden flex justify-center mb-6">
+            <BrandLogo variant="full" size="md" showSubtitle />
+          </div>
+
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-[#0F172A]">Xush kelibsiz!</h2>
             <p className="text-sm text-[#475569] mt-1">

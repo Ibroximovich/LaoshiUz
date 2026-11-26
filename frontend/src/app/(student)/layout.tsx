@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Button, Spin } from 'antd';
+import { Button } from 'antd';
 import {
   ArrowLeftOutlined,
   BookOutlined,
@@ -13,6 +13,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { BrandLogo } from '@/components/BrandLogo';
 import { useAuth } from '@/context/AuthContext';
 
 const studentNavItems = [
@@ -62,8 +63,10 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   if (loading || !user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC] gap-4 p-6">
-        <Spin size="large" />
-        <p className="text-sm text-[#475569]">Yuklanmoqda...</p>
+        <div className="animate-pulse">
+          <BrandLogo variant="icon" size="lg" />
+        </div>
+        <p className="text-sm text-[#475569] font-medium">Yuklanmoqda...</p>
       </div>
     );
   }
@@ -82,14 +85,14 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
       {/* Top Navbar (Desktop & Mobile brand bar) */}
       <header className="sticky top-0 z-30 h-16 bg-white/95 backdrop-blur-sm border-b border-[#E2E8F0]">
         <div className="max-w-6xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between gap-4">
-          <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-[#DC2626] text-white flex items-center justify-center text-lg font-bold shadow-sm font-hanzi">
-              老
-            </div>
-            <div>
-              <span className="font-bold text-[#0F172A] text-base">LaoshiUz</span>
-              <span className="hidden sm:inline text-xs text-[#475569] ml-2">HSK Academy</span>
-            </div>
+          <Link href="/dashboard" className="flex items-center shrink-0">
+            <span className="hidden sm:inline-flex">
+              <BrandLogo variant="full" size="md" />
+            </span>
+            <span className="sm:hidden inline-flex items-center gap-2">
+              <BrandLogo variant="icon" size="sm" />
+              <span className="font-bold text-[#0F172A] text-sm">LaoshiUz</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}

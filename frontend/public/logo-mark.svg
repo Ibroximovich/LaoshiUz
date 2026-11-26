@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Pagoda Roof Left (Crimson) -->
+  <path d="M60 12H35C35 16 32 19 28 21C22 24 14 26 8 25C11 31 18 35 28 36H60V12Z" fill="#B91C1C"/>
+  <!-- Pagoda Roof Right (Charcoal) -->
+  <path d="M60 12H85C85 16 88 19 92 21C98 24 106 26 112 25C109 31 102 35 92 36H60V12Z" fill="#291C1A"/>
+  <!-- Roof Gold Ribs -->
+  <path d="M36 16L24 34M45 14L38 34M53 14L50 34" stroke="#EAB308" stroke-width="2" stroke-linecap="round"/>
+  <path d="M84 16L96 34M75 14L82 34M67 14L70 34" stroke="#D4A34B" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Outer Frame Left (Crimson) -->
+  <path d="M20 40V88C20 93 24 97 29 97H49" stroke="#B91C1C" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Outer Frame Right (Gold) -->
+  <path d="M100 40V88C100 93 96 97 91 97H71" stroke="#D4A34B" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Monogram L (Crimson) -->
+  <path d="M29 42V88H56V80H38V42H29Z" fill="#991B1B"/>
+  <!-- Monogram U (Charcoal) -->
+  <path d="M64 88H79C87 88 91 83 91 75V42H82V74C82 78 79 80 75 80H64V88Z" fill="#291C1A"/>
+
+  <!-- Center Open Book -->
+  <path d="M60 55C54 51 45 51 41 53V73C46 71 54 71 60 76C66 71 74 71 79 73V53C75 51 66 51 60 55Z" fill="#FFFFFF" stroke="#291C1A" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M60 55V76" stroke="#D4A34B" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Golden Sun Above Book -->
+  <circle cx="60" cy="44" r="4.5" fill="#D4A34B"/>
+
+  <!-- Hanging Chinese Lantern (Right) -->
+  <line x1="103" y1="35" x2="103" y2="44" stroke="#D4A34B" stroke-width="2"/>
+  <ellipse cx="103" cy="53" rx="6.5" ry="8.5" fill="#FFFFFF" stroke="#D4A34B" stroke-width="2.2"/>
+  <line x1="103" y1="44.5" x2="103" y2="61.5" stroke="#D4A34B" stroke-width="1.5"/>
+  <line x1="103" y1="61.5" x2="103" y2="70" stroke="#D4A34B" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Bottom Endless Knot -->
+  <circle cx="60" cy="97" r="4" stroke="#B91C1C" stroke-width="2.2"/>
+  <circle cx="53" cy="97" r="2.8" stroke="#B91C1C" stroke-width="2"/>
+  <circle cx="67" cy="97" r="2.8" stroke="#D4A34B" stroke-width="2"/>
+  <circle cx="60" cy="90" r="2.6" stroke="#B91C1C" stroke-width="2"/>
+  <circle cx="60" cy="104" r="2.6" stroke="#D4A34B" stroke-width="2"/>
+</svg>

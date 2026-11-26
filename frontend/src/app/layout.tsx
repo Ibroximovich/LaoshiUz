@@ -16,6 +16,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'LaoshiUz — Xitoy tili va HSK platformasi',
   description: 'HSK 1–6 kurslari, interaktiv mashqlar, lug‘at va guruh nazorati platformasi',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
