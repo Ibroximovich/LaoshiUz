@@ -2,8 +2,9 @@ import path from 'node:path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
+import { webhookCallback } from 'grammy';
 import multer from 'multer';
-import { startBotPolling, telegramWebhookMiddleware } from './bot/bot.js';
+import { bot } from './bot.js';
 import { Prisma } from './generated/prisma/client.js';
 import attemptsRoutes from './routes/attempts.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -17,6 +18,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const renderExternalUrl = process.env.RENDER_EXTERNAL_URL?.trim();
 
 app.use(cors());
 app.use(express.json());
@@ -35,11 +37,11 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/exams', examsRouter);
 app.use('/api/certificates', certificatesRouter);
 
-if (telegramWebhookMiddleware) {
-  app.post('/api/telegram/webhook', telegramWebhookMiddleware);
+if (bot && renderExternalUrl) {
+  app.post('/api/telegram/webhook', webhookCallback(bot, 'express'));
 } else {
   app.post('/api/telegram/webhook', (_req: Request, res: Response) => {
-    res.status(503).json({ error: 'Telegram bot is not configured' });
+    res.status(503).json({ error: 'Telegram webhook is not active' });
   });
 }
 
@@ -83,5 +85,33 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  startBotPolling();
+
+  if (bot) {
+    if (renderExternalUrl) {
+      const webhookUrl = `${renderExternalUrl.replace(/\/+$/, '')}/api/telegram/webhook`;
+      bot.api
+        .setWebhook(webhookUrl)
+        .then(() => {
+          console.log(`Telegram webhook set to ${webhookUrl}`);
+        })
+        .catch((err) => {
+          console.error('Failed to set Telegram webhook:', err);
+        });
+    } else {
+      bot.start().catch((err: unknown) => {
+        const message = err instanceof Error ? err.message : String(err);
+        if (
+          message.includes('409') ||
+          (typeof err === 'object' &&
+            err !== null &&
+            'error_code' in err &&
+            (err as { error_code?: number }).error_code === 409)
+        ) {
+          console.warn('Telegram bot polling conflict (409): another instance is already running.');
+          return;
+        }
+        console.error('Telegram bot polling error:', err);
+      });
+    }
+  }
 });
